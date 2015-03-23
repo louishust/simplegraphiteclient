@@ -21,6 +21,19 @@ graphiteClient.sendMetrics(allAnswers);
 
 ````
 
+## Compile
+
+```
+mvn package
+```
+
+## Install
+
+```
+mvn install:install-file -Dfile=./target/simplegraphiteclient-1.0.0.jar -DgroupId=com.zanox.lib.simplegraphiteclient -DartifactId=simplegraphiteclient -Dversion=1.0.0 -Dpackaging=jar
+```
+
+
 ## Download
 
 The client jar is distributed via maven central.
