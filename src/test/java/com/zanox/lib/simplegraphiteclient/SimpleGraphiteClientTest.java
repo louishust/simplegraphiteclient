@@ -61,9 +61,9 @@ public class SimpleGraphiteClientTest {
 	
 	@Test
 	public void testSendMultipleMetrics() {
-		Map<String, Integer> data = new  HashMap<String, Integer>();
-		data.put("junit.test.metric1", 4711);
-		data.put("junit.test.metric2", 4712);
+		Map<String, Long> data = new  HashMap<String, Long>();
+		data.put("junit.test.metric1", 4711L);
+		data.put("junit.test.metric2", 4712L);
 		simpleGraphiteClient.sendMetrics(data);
 		assertTrue(out.toString().contains("junit.test.metric1 4711 " + currentTimestamp));
 		assertTrue(out.toString().contains("junit.test.metric2 4712 " + currentTimestamp));

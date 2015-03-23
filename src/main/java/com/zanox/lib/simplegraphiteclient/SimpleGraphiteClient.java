@@ -35,7 +35,7 @@ public class SimpleGraphiteClient {
 	 *  
 	 * @param metrics the metrics as key-value-pairs
 	 */
-	public void sendMetrics(Map<String, Integer> metrics) {
+	public void sendMetrics(Map<String, Long> metrics) {
 		sendMetrics(metrics, getCurrentTimestamp());
 	}
 
@@ -45,12 +45,12 @@ public class SimpleGraphiteClient {
 	 * @param metrics the metrics as key-value-pairs
 	 * @param timeStamp the timestamp
 	 */
-	public void sendMetrics(Map<String, Integer> metrics, long timeStamp) {
+	public void sendMetrics(Map<String, Long> metrics, long timeStamp) {
 		try {
 			Socket socket = createSocket();
 			OutputStream s = socket.getOutputStream();
 			PrintWriter out = new PrintWriter(s, true);
-			for (Map.Entry<String, Integer> metric: metrics.entrySet()) {
+			for (Map.Entry<String, Long> metric: metrics.entrySet()) {
 				out.printf("%s %d %d%n", metric.getKey(), metric.getValue(), timeStamp);	
 			}			
 			out.close();
@@ -73,7 +73,19 @@ public class SimpleGraphiteClient {
 	public void sendMetric(String key, int value) {
 		sendMetric(key, value, getCurrentTimestamp());
 	}
-	
+
+		/**
+	 * Send a single metric with the current time as timestamp to graphite. 
+	 * 
+	 * @param key The metric key
+	 * @param value the metric value
+	 * 
+	 * @throws GraphiteException if writing to graphite fails
+	 */
+	public void sendMetric(String key, long value) {
+		sendMetric(key, value, getCurrentTimestamp());
+	}
+
 	/**
 	 * Send a single metric with a given timestamp to graphite.
 	 * 
@@ -85,10 +97,27 @@ public class SimpleGraphiteClient {
 	 */
 	@SuppressWarnings("serial")
 	public void sendMetric(final String key, final int value, long timeStamp) {		
-		sendMetrics(new HashMap<String, Integer>() {{
+		sendMetrics(new HashMap<String, Long>() {{
+			put(key, (long)value);
+		}}, timeStamp);
+	}
+
+	/**
+	 * Send a single metric with a given timestamp to graphite.
+	 * 
+	 * @param key The metric key
+	 * @param value The metric value
+	 * @param timeStamp the timestamp to use
+	 * 
+	 * @throws GraphiteException if writing to graphite fails 
+	 */
+	@SuppressWarnings("serial")
+	public void sendMetric(final String key, final long value, long timeStamp) {		
+		sendMetrics(new HashMap<String, Long>() {{
 			put(key, value);
 		}}, timeStamp);
 	}
+
 	
 	protected Socket createSocket() throws UnknownHostException, IOException {
 		return new Socket(graphiteHost, graphitePort);
